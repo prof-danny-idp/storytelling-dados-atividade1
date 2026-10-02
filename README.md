@@ -130,4 +130,3 @@ Uma verificação automática roda em alguns segundos e **comenta no seu PR** co
 | Qualidade da skill e do `claude.md` | A skill é genérica, reutilizável e tem instruções acionáveis. O `claude.md` explica o contexto, o público e as decisões de design. |
 | Registro dos prompts | Os prompts estão em ordem, com a reflexão do que funcionou e do que mudou ao longo do processo. |
 | Funcionamento do HTML | O arquivo abre direto no navegador, sem erros, sem depender de arquivos locais, e funciona em telas diferentes. |
-x
