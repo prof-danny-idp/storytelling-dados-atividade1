@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O mapa partidário de 2024</title>
+<meta name="description" content="Como o poder municipal ficou distribuído entre partidos e alianças após as eleições de 2024.">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f6f5f2; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --ink3:#6f6e69; --line:#e0dfda; --grid:#ecebe7;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --outros:#a9a8a1;
+  --pos:#2a78d6; --neg:#e34948; --seq:#2a78d6; --accent:#184f95;
+}
+@media (prefers-color-scheme:dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme:dark;
+    --bg:#121211; --surface:#1a1a19; --ink:#ffffff; --ink2:#c3c2b7; --ink3:#9d9c94; --line:#33332f; --grid:#2a2a27;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --outros:#6b6a64;
+    --pos:#3987e5; --neg:#e66767; --seq:#3987e5; --accent:#86b6ef;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#121211; --surface:#1a1a19; --ink:#ffffff; --ink2:#c3c2b7; --ink3:#9d9c94; --line:#33332f; --grid:#2a2a27;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --outros:#6b6a64;
+  --pos:#3987e5; --neg:#e66767; --seq:#3987e5; --accent:#86b6ef;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.6;-webkit-text-size-adjust:100%}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header.hero{padding:56px 0 24px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(32px,6vw,56px);line-height:1.08;margin:12px 0 16px;letter-spacing:-.01em}
+.lede{font-size:clamp(18px,2.4vw,22px);color:var(--ink2);max-width:720px;margin:0}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:32px 0 8px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.tile b{display:block;font-size:clamp(28px,4vw,36px);line-height:1.1;font-variant-numeric:tabular-nums}
+.tile span{font-size:14px;color:var(--ink2)}
+section.cap{padding:40px 0 8px;border-top:1px solid var(--line);margin-top:32px}
+.num{font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.06em}
+h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(24px,3.6vw,34px);line-height:1.15;margin:4px 0 12px}
+h3{font-size:18px;margin:28px 0 4px}
+p{margin:0 0 14px;max-width:740px}
+p.txt{color:var(--ink2)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;margin:16px 0}
+.card h3{margin:0 0 2px;font-size:16px}
+.card .sub{font-size:14px;color:var(--ink2);margin:0 0 10px}
+.chart{position:relative;width:100%}
+canvas{max-width:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:4px 0 10px;font-size:14px;color:var(--ink2)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+details{margin-top:10px;font-size:14px;color:var(--ink2)}
+summary{cursor:pointer;font-weight:600;color:var(--ink2)}
+table{border-collapse:collapse;width:100%;font-size:13px;margin-top:8px;font-variant-numeric:tabular-nums}
+th,td{padding:5px 8px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}
+.scroll{overflow-x:auto}
+.heat td{min-width:62px;text-align:center;border:2px solid var(--surface)}
+.heat th{font-size:12px;text-align:center}
+.heat th:first-child{text-align:left}
+.callout{border-left:4px solid var(--accent);background:var(--surface);padding:14px 16px;border-radius:0 10px 10px 0;margin:20px 0;max-width:740px}
+.final ul{padding-left:20px;max-width:740px}
+.final li{margin-bottom:10px}
+footer{padding:32px 0 64px;color:var(--ink3);font-size:14px}
+footer h3{color:var(--ink2)}
+.err{display:none;background:#fff4d6;color:#7a5a00;border:1px solid #f0d58a;border-radius:10px;padding:12px;margin:16px 0}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <div class="kicker">Eleições municipais · 2024</div>
+  <h1>O mapa partidário de 2024</h1>
+  <p class="lede">Como o poder municipal ficou distribuído entre partidos e alianças? A resposta passa por contar prefeituras, mas não termina nela.</p>
+  <div class="tiles">
+    <div class="tile"><b>5.530</b><span>municípios com prefeito eleito</span></div>
+    <div class="tile"><b>24</b><span>partidos elegeram ao menos um prefeito</span></div>
+    <div class="tile"><b>16,0%</b><span>é a maior fatia de um só partido (PSD)</span></div>
+    <div class="tile"><b>95,0%</b><span>das vitórias vieram de coligação ou federação</span></div>
+  </div>
+  <div class="err" id="err">Não foi possível carregar a biblioteca de gráficos (Chart.js). Verifique a conexão; os dados continuam disponíveis nas tabelas abaixo de cada gráfico.</div>
+</header>
+
+<section class="cap">
+  <div class="num">1 · PANORAMA</div>
+  <h2>Um mapa sem dono: 24 partidos, nenhum com mais de 16% das prefeituras</h2>
+  <p class="txt">O PSD é o maior, com 886 prefeitos, e ainda assim comanda só uma em cada seis cidades. PSD, MDB, PP, União e PL, juntos, ficaram com <b>65,0%</b> das prefeituras. Os outros 19 partidos dividem o restante.</p>
+  <div class="card">
+    <h3>Prefeituras conquistadas por partido</h3>
+    <p class="sub">Número de municípios em que o partido elegeu o prefeito. Cores: os cinco maiores; cinza: os demais.</p>
+    <div class="chart" style="height:640px"><canvas id="c_pref" role="img" aria-label="Barras horizontais com o número de prefeituras por partido"></canvas></div>
+    <details><summary>Ver como tabela</summary><div class="scroll" id="t_pref"></div></details>
+  </div>
+</section>
+
+<section class="cap">
+  <div class="num">2 · PESO</div>
+  <h2>Contar prefeituras esconde o peso real de cada partido</h2>
+  <p class="txt">Uma cidade de 3 mil eleitores e uma de 3 milhões valem uma prefeitura cada. Ao medir também <b>quantos eleitores votaram</b> nos municípios que cada partido venceu, a ordem muda: o <b>PL</b> tem 9,3% das prefeituras, mas 12,0% dos votos (+2,7 pontos). O <b>PP</b> faz o caminho inverso: 13,5% das cidades, 10,0% dos votos (−3,5 pontos). Vence muito, mas em cidades pequenas.</p>
+  <div class="card">
+    <h3>Peso em votos menos peso em prefeituras (pontos percentuais)</h3>
+    <p class="sub">Positivo: o partido governa mais eleitores do que o número de prefeituras sugere. Negativo: governa mais cidades pequenas. Os 12 maiores partidos.</p>
+    <div class="legend"><span><i style="background:var(--pos)"></i>Peso em votos maior que em prefeituras</span><span><i style="background:var(--neg)"></i>Peso em votos menor</span></div>
+    <div class="chart" style="height:440px"><canvas id="c_peso" role="img" aria-label="Diferença em pontos percentuais entre a fatia de votos e a fatia de prefeituras de cada partido"></canvas></div>
+    <details><summary>Ver como tabela</summary><div class="scroll" id="t_peso"></div></details>
+  </div>
+</section>
+
+<section class="cap">
+  <div class="num">3 · TERRITÓRIO</div>
+  <h2>Cada partido tem o seu território: porte da cidade e região</h2>
+  <p class="txt">PSD, MDB e PP lideram nas cidades pequenas. À medida que a cidade cresce, o <b>PL</b> ganha espaço: tem 7,7% das prefeituras nas cidades com até 5 mil votos válidos e 19,9% entre 50 e 200 mil, faixa em que é o primeiro. Nas 58 maiores cidades (acima de 200 mil votos), a disputa é mais aberta: nenhum partido passa de 15,5%.</p>
+  <div class="card">
+    <h3>Quem governa cidades de cada porte</h3>
+    <p class="sub">% das prefeituras de cada faixa (porte medido pelos votos válidos; entre parênteses, o número de municípios).</p>
+    <div class="legend" id="lg_porte"></div>
+    <div class="chart" style="height:380px"><canvas id="c_porte" role="img" aria-label="Barras empilhadas com a fatia dos cinco maiores partidos em cada faixa de porte"></canvas></div>
+    <details><summary>Ver como tabela</summary><div class="scroll" id="t_porte"></div></details>
+  </div>
+  <p class="txt" style="margin-top:24px">No mapa do país, a divisão é ainda mais nítida. O <b>MDB</b> lidera Norte e Nordeste; o <b>União</b> tem 1 em cada 3 prefeituras do Centro-Oeste (33,4%); o <b>PP</b> é o mais forte no Sul (23,4%); o <b>PSD</b> no Sudeste (21,4%). O PL, com 15,1% no Sul, tem só 4,4% no Nordeste.</p>
+  <div class="card">
+    <h3>Quem governa cada região</h3>
+    <p class="sub">% das prefeituras de cada região (entre parênteses, o número de municípios).</p>
+    <div class="legend" id="lg_regiao"></div>
+    <div class="chart" style="height:340px"><canvas id="c_regiao" role="img" aria-label="Barras empilhadas com a fatia dos cinco maiores partidos em cada região"></canvas></div>
+    <details><summary>Ver como tabela</summary><div class="scroll" id="t_regiao"></div></details>
+  </div>
+</section>
+
+<section class="cap">
+  <div class="num">4 · ALIANÇAS</div>
+  <h2>As alianças são a regra: quase todo prefeito venceu acompanhado</h2>
+  <p class="txt">Só 278 prefeitos (5,0%) venceram por um partido isolado. A chapa vencedora tinha em mediana <b>4 partidos</b> (média de 4,4), e em 204 casos, 10 ou mais. Em <b>77,4%</b> das chapas, o vice é de outro partido que o do prefeito.</p>
+  <div class="card">
+    <h3>Quantos partidos tinha a chapa vencedora</h3>
+    <p class="sub">Número de municípios, por quantidade de partidos na coligação (federações contam por partido que as compõem).</p>
+    <div class="chart" style="height:300px"><canvas id="c_hist" role="img" aria-label="Histograma da quantidade de partidos por chapa vencedora"></canvas></div>
+    <details><summary>Ver como tabela</summary><div class="scroll" id="t_hist"></div></details>
+  </div>
+
+  <h3>Quem encabeça e quem acompanha</h3>
+  <p class="txt">Aparecer em muitas chapas vencedoras não é o mesmo que ser o cabeça delas. MDB, PP e PSD estão em mais de 2.100 chapas vencedoras cada, mas encabeçam cerca de uma em três (PSD 41%, MDB 38%, PP 35%). Cidadania, PODE e PSDB aparecem muito mais como apoio: o Cidadania está em 1.334 chapas e encabeçou 32. Atenção: partidos federados (PSDB com Cidadania; PT com PC do B e PV) entram juntos em todas as chapas da federação.</p>
+  <div class="card">
+    <h3>Chapas vencedoras que cada partido integra</h3>
+    <p class="sub">Parte escura: o partido encabeçou a chapa (prefeito). Parte clara: apoiou sem encabeçar. Os 10 partidos mais presentes.</p>
+    <div class="legend"><span><i style="background:var(--seq)"></i>Encabeçou (elegeu o prefeito)</span><span><i style="background:var(--seq);opacity:.35"></i>Apoiou sem encabeçar</span></div>
+    <div class="chart" style="height:420px"><canvas id="c_lidera" role="img" aria-label="Chapas vencedoras que cada partido encabeça e apoia"></canvas></div>
+    <details><summary>Ver como tabela</summary><div class="scroll" id="t_lidera"></div></details>
+  </div>
+
+  <h3>Com quem cada partido se aliou</h3>
+  <p class="txt">A cada 100 prefeituras do PL, 33 tinham o PP na chapa e apenas 10 tinham o PSB. Já entre as 272 prefeituras do PSDB, 36 em 100 tinham o PSD. Cada linha mostra os prefeitos de um partido; cada coluna, o aliado na chapa.</p>
+  <div class="card">
+    <h3>Dos prefeitos de cada partido (linha), % com o aliado (coluna) na chapa</h3>
+    <p class="sub">Quanto mais escuro, mais frequente a aliança. Os 8 maiores partidos.</p>
+    <div class="scroll" id="heat"></div>
+  </div>
+</section>
+
+<section class="cap">
+  <div class="num">5 · FOLGA</div>
+  <h2>Vitórias confortáveis, mas poucas esmagadoras</h2>
+  <p class="txt">O prefeito eleito teve em mediana 58,2% dos votos válidos. 23,1% venceram com 70% ou mais, e 14,9% com menos da metade dos votos (possível nas cidades de turno único, decididas por maioria simples). Nas 51 cidades em que houve segundo turno, o vencedor passou de 50% por definição.</p>
+  <div class="card">
+    <h3>Votos válidos do prefeito eleito (% do total do município)</h3>
+    <p class="sub">Número de municípios por faixa de votação do vencedor.</p>
+    <div class="chart" style="height:320px"><canvas id="c_pct" role="img" aria-label="Histograma do percentual de votos válidos do prefeito eleito"></canvas></div>
+    <details><summary>Ver como tabela</summary><div class="scroll" id="t_pct"></div></details>
+  </div>
+</section>
+
+<section class="cap final">
+  <div class="num">6 · CONCLUSÃO</div>
+  <h2>Então, como o poder municipal ficou distribuído?</h2>
+  <div class="callout"><b>Pulverizado no topo, concentrado no conjunto e negociado em aliança.</b></div>
+  <ul>
+    <li><b>Ninguém manda sozinho.</b> O maior partido elegeu 16% dos prefeitos, mas cinco partidos concentram 65%. Os outros 19 repartem o resto.</li>
+    <li><b>Cada um manda em um tipo de lugar.</b> PSD, MDB e PP dominam cidades pequenas; o PL cresce nas médias; o União lidera o Centro-Oeste; o PP, o Sul; o MDB, o Norte e o Nordeste. Por isso o número de prefeituras sozinho engana: o PL pesa mais em votos do que em cidades, o PP o contrário.</li>
+    <li><b>O poder é compartilhado.</b> 95,0% das prefeituras foram ganhas por coligação, com vice de outro partido em 77,4% dos casos. Quem aparece em muitas chapas (Cidadania, PODE, PSDB) nem sempre encabeça: o mapa de quem manda é também o mapa de quem se alia a quem.</li>
+  </ul>
+</section>
+
+<footer>
+  <h3>Como ler este painel</h3>
+  <p><b>Fonte:</b> candidaturas e resultados das eleições municipais de 2024 (TSE), extração de 01/10/2026. A base considerada tem os 5.530 municípios com prefeito eleito segundo o cadastro atual do TSE; ficam de fora 9 chapas com cassação registrada e 14 eleições históricas documentadas, que o cadastro atual não marca como eleitas.</p>
+  <p><b>Prefeitos apenas:</b> os votos aparecem repetidos nas linhas de prefeito e vice, por isso as contagens usam só a linha do prefeito, uma por município.</p>
+  <p><b>Porte da cidade:</b> não há população na base. Usamos os votos válidos do município no turno decisivo como aproximação do tamanho do eleitorado que votou.</p>
+  <p><b>Partidos nas alianças:</b> lidos da composição da coligação; federações são desdobradas em seus partidos. Votos e situações podem diferir do divulgado em 2024, pois refletem a extração de 2026. A base descreve resultados de 2024, e não os ocupantes atuais dos cargos.</p>
+  <p><b>Glossário.</b> <i>Coligação:</i> união de partidos para disputar a mesma eleição. <i>Federação:</i> união mais duradoura de partidos, que atuam como um só. <i>Chapa:</i> prefeito e vice. <i>Votos válidos:</i> votos em candidatos, sem brancos e nulos. <i>Turno único:</i> eleição decidida em uma rodada, por maioria simples.</p>
+</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const D = {"total": 5530, "pref": [["PSD", 886], ["MDB", 859], ["PP", 747], ["UNIÃO", 588], ["PL", 515], ["REPUBLICANOS", 433], ["PSB", 311], ["PSDB", 272], ["PT", 252], ["PDT", 151], ["AVANTE", 134], ["PODE", 127], ["PRD", 77], ["SOLIDARIEDADE", 63], ["CIDADANIA", 32], ["MOBILIZA", 20], ["PC do B", 19], ["NOVO", 19], ["PV", 13], ["REDE", 4], ["AGIR", 3], ["PMB", 2], ["DC", 2], ["PRTB", 1]], "peso": [["PSD", 16.0, 17.2, 1.1, 886], ["MDB", 15.5, 17.5, 1.9, 859], ["PP", 13.5, 10.0, -3.5, 747], ["UNIÃO", 10.6, 11.1, 0.5, 588], ["PL", 9.3, 12.0, 2.7, 515], ["REPUBLICANOS", 7.8, 6.7, -1.1, 433], ["PSB", 5.6, 4.9, -0.7, 311], ["PSDB", 4.9, 4.1, -0.8, 272], ["PT", 4.6, 5.1, 0.6, 252], ["PDT", 2.7, 1.8, -1.0, 151], ["AVANTE", 2.4, 2.4, 0.0, 134], ["PODE", 2.3, 3.5, 1.2, 127]], "porte": [{"g": "até 5 mil", "n": 1893, "parts": [17.1, 17.1, 14.9, 11.1, 7.7, 32.1], "lider": "PSD", "lider_pct": 17.1}, {"g": "5–10 mil", "n": 1469, "parts": [16.3, 14.6, 12.0, 11.3, 9.0, 36.8], "lider": "PSD", "lider_pct": 16.3}, {"g": "10–20 mil", "n": 1177, "parts": [15.2, 14.5, 14.7, 9.6, 8.2, 37.8], "lider": "PSD", "lider_pct": 15.2}, {"g": "20–50 mil", "n": 666, "parts": [13.5, 17.3, 12.9, 9.6, 11.9, 34.8], "lider": "MDB", "lider_pct": 17.3}, {"g": "50–200 mil", "n": 267, "parts": [16.5, 10.9, 8.6, 9.7, 19.9, 34.4], "lider": "PL", "lider_pct": 19.9}, {"g": "acima de 200 mil", "n": 58, "parts": [15.5, 12.1, 10.3, 15.5, 13.8, 32.8], "lider": "UNIÃO", "lider_pct": 15.5}], "regiao": [{"g": "Norte", "n": 449, "parts": [7.8, 24.7, 13.1, 22.5, 4.7, 27.2], "lider": "MDB", "lider_pct": 24.7}, {"g": "Nordeste", "n": 1782, "parts": [15.3, 15.8, 12.0, 8.6, 4.4, 43.9], "lider": "MDB", "lider_pct": 15.8}, {"g": "Centro-Oeste", "n": 464, "parts": [1.7, 16.2, 9.9, 33.4, 11.4, 27.4], "lider": "UNIÃO", "lider_pct": 33.4}, {"g": "Sudeste", "n": 1646, "parts": [21.4, 10.1, 9.2, 7.2, 11.2, 40.9], "lider": "PSD", "lider_pct": 21.4}, {"g": "Sul", "n": 1189, "parts": [18.3, 18.9, 23.4, 5.0, 15.1, 19.3], "lider": "PP", "lider_pct": 23.4}], "hist_partidos": [["1", 278], ["2", 957], ["3", 1032], ["4", 945], ["5", 761], ["6", 592], ["7", 351], ["8", 275], ["9", 135], ["10+", 204]], "lidera": [["MDB", 2236, 859], ["PP", 2160, 747], ["PSD", 2158, 886], ["UNIÃO", 1865, 588], ["REPUBLICANOS", 1715, 433], ["PL", 1565, 515], ["CIDADANIA", 1334, 32], ["PSDB", 1334, 272], ["PSB", 1328, 311], ["PODE", 1128, 127]], "cols": ["PSD", "MDB", "PP", "UNIÃO", "PL", "REPUBLICANOS", "PSB", "PSDB"], "mat": [[null, 28, 31, 27, 25, 28, 20, 21], [28, null, 30, 26, 17, 21, 25, 20], [28, 28, null, 28, 26, 23, 17, 21], [23, 35, 31, null, 28, 27, 16, 23], [25, 29, 33, 30, null, 29, 10, 23], [25, 28, 32, 28, 20, null, 22, 18], [23, 27, 23, 20, 14, 36, null, 16], [36, 33, 33, 32, 26, 26, 17, null]], "hist_pct": [["20–25", 2], ["25–30", 11], ["30–35", 52], ["35–40", 128], ["40–45", 248], ["45–50", 384], ["50–55", 1319], ["55–60", 937], ["60–65", 697], ["65–70", 472], ["70–75", 352], ["75–80", 258], ["80–85", 204], ["85–90", 108], ["90–95", 50], ["95–100", 20]]};
+const PT = n => n.toLocaleString('pt-BR');
+const P1 = n => n.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const TOP = ['PSD','MDB','PP','UNIÃO','PL'];
+const NM = {'UNIÃO':'União'};
+const nm = k => NM[k] || k;
+const charts = [];
+
+function table(id, head, rows){
+  const el = document.getElementById(id); if(!el) return;
+  el.innerHTML = '<table><thead><tr>'+head.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+
+    rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+}
+function lum(hex){
+  const m = hex.replace('#','');
+  const v = [0,2,4].map(i=>parseInt(m.substr(i,2),16)/255).map(c=>c<=.03928?c/12.92:Math.pow((c+.055)/1.055,2.4));
+  return .2126*v[0]+.7152*v[1]+.0722*v[2];
+}
+const onColor = hex => lum(hex) > .3 ? '#0b0b0b' : '#ffffff';
+
+/* tabelas (sempre disponíveis, mesmo sem a biblioteca de gráficos) */
+table('t_pref',['Partido','Prefeituras','% do total'], D.pref.map(r=>[nm(r[0]),PT(r[1]),P1(r[1]/D.total*100)+'%']));
+table('t_peso',['Partido','% das prefeituras','% dos votos','Diferença (p.p.)'], D.peso.map(r=>[nm(r[0]),P1(r[1]),P1(r[2]),(r[3]>0?'+':'')+P1(r[3])]));
+const sh = ['Faixa','Municípios'].concat(TOP.map(nm),['Outros']);
+table('t_porte', sh, D.porte.map(o=>[o.g,PT(o.n)].concat(o.parts.map(x=>P1(x)+'%'))));
+table('t_regiao', sh, D.regiao.map(o=>[o.g,PT(o.n)].concat(o.parts.map(x=>P1(x)+'%'))));
+table('t_hist',['Partidos na chapa','Municípios'], D.hist_partidos.map(r=>[r[0],PT(r[1])]));
+table('t_lidera',['Partido','Chapas vencedoras que integra','Encabeçou','Apoiou sem encabeçar'], D.lidera.map(r=>[nm(r[0]),PT(r[1]),PT(r[2]),PT(r[1]-r[2])]));
+table('t_pct',['Votos do vencedor (%)','Municípios'], D.hist_pct.map(r=>[r[0],PT(r[1])]));
+
+/* mapa de calor em HTML */
+(function(){
+  const c = D.cols;
+  let h = '<table class="heat"><thead><tr><th>Prefeito do…</th>'+c.map(x=>'<th>'+nm(x)+'</th>').join('')+'</tr></thead><tbody>';
+  D.mat.forEach((row,i)=>{
+    h += '<tr><th>'+nm(c[i])+'</th>' + row.map(v=>{
+      if(v===null) return '<td style="color:var(--ink3)">—</td>';
+      const a = Math.min(1, v/40);
+      return '<td style="background:color-mix(in srgb, var(--seq) '+Math.round(8+a*82)+'%, var(--surface));color:'+(a>.55?'#fff':'var(--ink)')+'">'+v+'%</td>';
+    }).join('')+'</tr>';
+  });
+  document.getElementById('heat').innerHTML = h+'</tbody></table>';
+})();
+
+function legend(id, labels, colors){
+  document.getElementById(id).innerHTML = labels.map((l,i)=>'<span><i style="background:'+colors[i]+'"></i>'+l+'</span>').join('');
+}
+
+/* plugin: rótulos de valor dentro/ao lado das barras */
+const valueLabels = {
+  id:'valueLabels',
+  afterDatasetsDraw(chart, _a, opt){
+    if(!opt || !opt.on) return;
+    const ctx = chart.ctx; ctx.save(); ctx.font = '600 12px system-ui,sans-serif'; ctx.textBaseline='middle';
+    chart.data.datasets.forEach((ds,di)=>{
+      const meta = chart.getDatasetMeta(di); if(meta.hidden) return;
+      meta.data.forEach((bar,i)=>{
+        const v = ds.data[i]; const txt = opt.fmt ? opt.fmt(v,di,i) : String(v);
+        if(opt.stack){
+          if(v < (opt.min||8)) return;
+          const w = Math.abs(bar.x - bar.base); if(w < 40) return;
+          ctx.fillStyle = onColor(Array.isArray(ds.backgroundColor)?ds.backgroundColor[i]:ds.backgroundColor);
+          ctx.textAlign='center'; ctx.fillText(txt, (bar.x+bar.base)/2, bar.y);
+        } else {
+          ctx.fillStyle = css('--ink2');
+          if(opt.horizontalEnd){ const neg = v<0; ctx.textAlign = neg?'right':'left'; ctx.fillText(txt, bar.x+(neg?-6:6), bar.y); }
+          else { ctx.textAlign='center'; ctx.fillText(txt, bar.x, bar.y-10); }
+        }
+      });
+    });
+    ctx.restore();
+  }
+};
+
+function base(){
+  Chart.defaults.font.family = 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+  Chart.defaults.font.size = 13;
+  Chart.defaults.color = css('--ink2');
+  Chart.defaults.borderColor = css('--grid');
+}
+const ent = () => [css('--s1'),css('--s2'),css('--s3'),css('--s4'),css('--s5'),css('--outros')];
+function mk(id, cfg){ const c = new Chart(document.getElementById(id), cfg); charts.push(c); return c; }
+const grid = () => ({color:css('--grid'), drawTicks:false});
+const rgba = (hex,a) => { const m=hex.replace('#',''); return 'rgba('+[0,2,4].map(i=>parseInt(m.substr(i,2),16)).join(',')+','+a+')'; };
+
+function build(){
+  base();
+  const E = ent();
+  const colorOf = k => { const i = TOP.indexOf(k); return i>=0 ? E[i] : E[5]; };
+  /* 1. prefeituras por partido */
+  mk('c_pref',{type:'bar',
+    data:{labels:D.pref.map(r=>nm(r[0])),datasets:[{data:D.pref.map(r=>r[1]),backgroundColor:D.pref.map(r=>colorOf(r[0])),borderRadius:4,borderSkipped:'start',barPercentage:.78}]},
+    options:{indexAxis:'y',maintainAspectRatio:false,layout:{padding:{right:56}},
+      plugins:{legend:{display:false},valueLabels:{on:true,horizontalEnd:true,fmt:v=>PT(v)},
+        tooltip:{callbacks:{label:c=>PT(c.raw)+' prefeituras ('+P1(c.raw/D.total*100)+'%)'}}},
+      scales:{x:{grid:grid(),border:{display:false},ticks:{callback:v=>PT(v)}},y:{grid:{display:false},border:{display:false},ticks:{autoSkip:false}}}},
+    plugins:[valueLabels]});
+  /* 2. peso em votos x prefeituras */
+  mk('c_peso',{type:'bar',
+    data:{labels:D.peso.map(r=>nm(r[0])),datasets:[{data:D.peso.map(r=>r[3]),backgroundColor:D.peso.map(r=>r[3]>=0?css('--pos'):css('--neg')),borderRadius:4,barPercentage:.78}]},
+    options:{indexAxis:'y',maintainAspectRatio:false,layout:{padding:{right:48,left:8}},
+      plugins:{legend:{display:false},valueLabels:{on:true,horizontalEnd:true,fmt:v=>(v>0?'+':'')+P1(v)},
+        tooltip:{callbacks:{label:c=>{const r=D.peso[c.dataIndex];return ['Prefeituras: '+P1(r[1])+'%','Votos: '+P1(r[2])+'%','Diferença: '+(r[3]>0?'+':'')+P1(r[3])+' p.p.'];}}}},
+      scales:{x:{min:-5,max:4,grid:grid(),border:{display:false},title:{display:true,text:'pontos percentuais'}},
+              y:{grid:{display:false},border:{display:false},ticks:{autoSkip:false},position:'left'}}},
+    plugins:[valueLabels]});
+  /* 3. empilhados por porte e região */
+  const stacked = (id, rows) => {
+    const names = TOP.map(nm).concat(['Outros']);
+    mk(id,{type:'bar',
+      data:{labels:rows.map(o=>o.g+' ('+PT(o.n)+')'),
+        datasets:names.map((n,i)=>({label:n,data:rows.map(o=>o.parts[i]),backgroundColor:E[i],borderColor:css('--surface'),borderWidth:2,borderSkipped:false}))},
+      options:{indexAxis:'y',maintainAspectRatio:false,
+        plugins:{legend:{display:false},valueLabels:{on:true,stack:true,min:7,fmt:v=>P1(v)+'%'},
+          tooltip:{callbacks:{label:c=>c.dataset.label+': '+P1(c.raw)+'%'}}},
+        scales:{x:{stacked:true,max:100,grid:grid(),border:{display:false},ticks:{callback:v=>v+'%'}},y:{stacked:true,grid:{display:false},border:{display:false},ticks:{autoSkip:false}}}},
+      plugins:[valueLabels]});
+  };
+  stacked('c_porte', D.porte); stacked('c_regiao', D.regiao);
+  const lab = TOP.map(nm).concat(['Outros']);
+  legend('lg_porte', lab, E); legend('lg_regiao', lab, E);
+  /* 4a. tamanho da chapa */
+  mk('c_hist',{type:'bar',
+    data:{labels:D.hist_partidos.map(r=>r[0]),datasets:[{data:D.hist_partidos.map(r=>r[1]),backgroundColor:css('--seq'),borderRadius:4,borderSkipped:'bottom',barPercentage:.8}]},
+    options:{maintainAspectRatio:false,layout:{padding:{top:20}},
+      plugins:{legend:{display:false},valueLabels:{on:true,fmt:v=>PT(v)},tooltip:{callbacks:{label:c=>PT(c.raw)+' municípios'}}},
+      scales:{x:{grid:{display:false},border:{display:false},title:{display:true,text:'partidos na chapa vencedora'}},y:{grid:grid(),border:{display:false},ticks:{callback:v=>PT(v)}}}},
+    plugins:[valueLabels]});
+  /* 4b. encabeça x apoia */
+  const sc = css('--seq');
+  mk('c_lidera',{type:'bar',
+    data:{labels:D.lidera.map(r=>nm(r[0])),datasets:[
+      {label:'Encabeçou',data:D.lidera.map(r=>r[2]),backgroundColor:sc,borderColor:css('--surface'),borderWidth:2,borderSkipped:false},
+      {label:'Apoiou sem encabeçar',data:D.lidera.map(r=>r[1]-r[2]),backgroundColor:rgba(sc,.35),borderColor:css('--surface'),borderWidth:2,borderSkipped:false}]},
+    options:{indexAxis:'y',maintainAspectRatio:false,layout:{padding:{right:12}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+PT(c.raw),footer:i=>{const r=D.lidera[i[0].dataIndex];return 'Integra '+PT(r[1])+' chapas; encabeça '+P1(r[2]/r[1]*100)+'%';}}}},
+      scales:{x:{stacked:true,grid:grid(),border:{display:false},ticks:{callback:v=>PT(v)}},y:{stacked:true,grid:{display:false},border:{display:false},ticks:{autoSkip:false}}}}});
+  /* 5. votação do vencedor */
+  mk('c_pct',{type:'bar',
+    data:{labels:D.hist_pct.map(r=>r[0]),datasets:[{data:D.hist_pct.map(r=>r[1]),backgroundColor:css('--seq'),borderRadius:4,borderSkipped:'bottom',barPercentage:.9}]},
+    options:{maintainAspectRatio:false,layout:{padding:{top:20}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>PT(c.raw)+' municípios'}}},
+      scales:{x:{grid:{display:false},border:{display:false},title:{display:true,text:'% dos votos válidos do vencedor'},ticks:{maxRotation:60,minRotation:0}},y:{grid:grid(),border:{display:false},ticks:{callback:v=>PT(v)}}}}});
+}
+
+function rebuild(){ charts.splice(0).forEach(c=>c.destroy()); build(); }
+if(window.Chart){
+  build();
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  if(mq.addEventListener) mq.addEventListener('change', rebuild); else if(mq.addListener) mq.addListener(rebuild);
+} else {
+  document.getElementById('err').style.display='block';
+}
+</script>
+</body>
+</html>
